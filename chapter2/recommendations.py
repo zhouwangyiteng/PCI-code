@@ -66,7 +66,8 @@ def sim_pearson(prefs, p1, p2):
 
 
 def topMatches(prefs, person, n=5, similarity = sim_pearson):
-  score = [(similarity(prefs, person, other), other) for other in prefs if other!=person]
+  score = [(similarity(prefs, person, other), other)
+           for other in prefs if other!=person]
 
   score.sort()
   score.reverse()
@@ -109,10 +110,43 @@ def transformPrefs(prefs):
   return result
 
 
+def calculateSimilarItems(prefs, n=10):
+  result = {}
+
+  itemPrefs = transformPrefs(prefs)
+  c = 0
+  for item in itemPrefs:
+    c += 1
+    if c % 100==0:
+      print "%d / %d" % (c, len(itemPrefs))
+    scores = topMatches(itemPrefs, item, n=n, similarity = sim_distance)
+    result[item] = scores
+
+  return result
 
 
+def getRecommendedItems(prefs, itemMatch, user):
+  userRatings = prefs[user]
+  scores = {}
+  totalSim = {}
 
+  for (item, rating) in userRatings.items():
+    for (similarity, item2) in itemMatch[item]:
+      if item2 in userRatings:
+        continue
+      scores.setdefault(item2, 0)
+      scores[item2] += similarity * rating
 
+      totalSim.setdefault(item2, 0)
+      totalSim[item2] += similarity
+
+  rankings = [(score / totalSim[item], item)
+             for item, score in scores.items()]
+
+  rankings.sort()
+  rankings.reverse()
+  return rankings
+      
 
 
 
