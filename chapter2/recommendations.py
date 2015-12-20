@@ -74,27 +74,31 @@ def topMatches(prefs, person, n=5, similarity = sim_pearson):
   return score[:n]
 
 
-def getRecommendations(prefs, person, similarity = sim_pearson):
-  totals = {}
-  simSums = {}
+def getRecommendations(prefs,person,similarity=sim_pearson):
+  totals={}
+  simSums={}
   for other in prefs:
-    if other==person:
-      continue
-    
-    sim = similarity(prefs, person, other)
+    # don't compare me to myself
+    if other==person: continue
+    sim=similarity(prefs,person,other)
 
-    if sim<0:
-      continue
-
+    # ignore scores of zero or lower
+    if sim<=0: continue
     for item in prefs[other]:
+	    
+      # only score movies I haven't seen yet
       if item not in prefs[person] or prefs[person][item]==0:
-        totals.setdefault(item, 0)
-        totals[item] += prefs[other][item] * sim
-        simSums.setdefault(item, 0)
-        simSums[item] += sim
+        # Similarity * Score
+        totals.setdefault(item,0)
+        totals[item]+=prefs[other][item]*sim
+        # Sum of similarities
+        simSums.setdefault(item,0)
+        simSums[item]+=sim
 
-  rankings = [(total / simSums[item], item) for item, total in totals.items()]
+  # Create the normalized list
+  rankings=[(total/simSums[item],item) for item,total in totals.items()]
 
+  # Return the sorted list
   rankings.sort()
   rankings.reverse()
   return rankings
