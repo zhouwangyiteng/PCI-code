@@ -152,14 +152,14 @@ def getRecommendedItems(prefs, itemMatch, user):
   return rankings
       
 
-def loadMovieLens(path = r"F:\pycode\PCI\PCI_data"):
+def loadMovieLens(path = r"F:\pycode\PCI\PCI_data\"):
   movies = {}
-  for line in open(path + '\u.item'):
+  for line in open(path + 'u.item'):
     (ID, title) = line.split('|')[0:2]
     movies[ID] = title
 
   prefs = {}
-  for line in open(path + '\u.data'):
+  for line in open(path + 'u.data'):
     (user, movieid, rating, ts) = line.split('\t')
     prefs.setdefault(user, {})
     prefs[user][movies[movieid]] = float(rating)
