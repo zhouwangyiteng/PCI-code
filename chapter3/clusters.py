@@ -248,7 +248,7 @@ def draw2d(data, labels, jpeg='mds2d.jpg'):
 
 blognames, words, data = readfile('blogdata.txt')
 coords = scaledown(data)
-draw2d(coords, blognames, jpeg='blogs2d.jpg')
+draw2d(coords, blognames, jpeg='blogs2d2.jpg')
 
 
 
